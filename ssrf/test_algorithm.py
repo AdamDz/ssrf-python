@@ -2,10 +2,9 @@ import logging
 from unittest import TestCase
 import mox
 from datetime import date, timedelta
-from ssrf.algorithms.ssrf import *
+from ssrf.algorithm import *
 from nose.tools import *
 logging.basicConfig(format=logging.BASIC_FORMAT, level=logging.DEBUG)
-
 
 class TestSSRFAlgorithm (TestCase):
     def setUp(self):
