@@ -3,28 +3,7 @@ import logging
 from math import exp, log
 import sys
 from collections import namedtuple
-
 logger = logging.getLogger(__name__)
-
-##class SSRFAlgorithmLUData (Bunch):
-#    """ SSRF algorithm parameters for a single learning unit.
-#
-#    Instance variables:
-#    * ``grade`` - see SSRFAlgorithm documentation for allowed values
-#    * ``num_reviews`` - number of review; starts from 1 for a new LU
-#    * ``avg_grade`` - average grade
-#    * ``priority`` - material priority; see SSRFAlgorithm documentation for allowed values
-#    * ``difficulty`` - how this LU compares to an ideal LU
-#    """
-def format_ssrf_data(alg_data):
-    return "grade: %(grade)s, num_reviews: %(num_reviews)d, \
-avg_grade: %(avg_grade).2f, priority: %(priority)1.1f, \
-difficulty: %(difficulty).2f, status: %(status)s" % \
-        {"grade": self.grade, "num_reviews": self.num_reviews,
-         "avg_grade": self.avg_grade, "priority": self.priority,
-         "difficulty": self.difficulty, "status": self.status}
-
-
 
 AlgorithmResult = namedtuple('AlgorithmResult', 'next_review alg_data')
 
@@ -39,7 +18,6 @@ MAX_GRADE = GRADES[len(GRADES) - 1]
 FINAL_DRILL = 0
 MEMORIZED = 1
 STATUSES = (FINAL_DRILL, MEMORIZED)
-
 
 class SSRFAlgorithmGlobalData (object):
     """ Defines operations which gather data not associated with the current
@@ -251,6 +229,14 @@ class SSRFAlgorithm (object):
     Average grade AG(1) = 2.5 (alternative value, not used in this implementation - average grade for all items)
     
     Priority of material P = 3.0 (alternative value, not used in this implementation - average priority of all items)
+
+    SSRF algorithm parameters for a single learning unit:
+    * ``grade`` - see SSRFAlgorithm documentation for allowed values
+    * ``num_reviews`` - number of review; starts from 1 for a new LU
+    * ``avg_grade`` - average grade
+    * ``priority`` - material priority; see SSRFAlgorithm documentation for allowed values
+    * ``difficulty`` - how this LU compares to an ideal LU
+
     """
     FINAL_DRILL_GRADES = (0, 1, 2)
 

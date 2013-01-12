@@ -7,13 +7,27 @@ except ImporterError:
 
 setup(
     name='ssrf',
-    version="0.1.0",
-    #description='',
-    #author='',
-    #author_email='',
-    #url='',
-    install_requires=['nose', 'mox'],
+    version='0.1.1',
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
-    test_suite='nose.collector'
+    license='Creative Commons Attribution-Share Alike license',
+    description="Simple Spaced Repetition Formula",
+    long_description="""
+    Simple yet powerful spaced repetition algorithm used by RapidStudy.com.
+    See: http://www.rapidstudy.com
+    """,
+    install_requires=[],
+    tests_require=['nose', 'mox'],
+    author='Adam Dziendziel',
+    author_email='adam.dziendziel@gmail.com',
+    url='https://github.com/AdamDz/ssrf-python',
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Operating System :: POSIX',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Education',
+    ],
 )
+
