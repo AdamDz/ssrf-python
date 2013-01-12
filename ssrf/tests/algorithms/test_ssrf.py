@@ -1,10 +1,9 @@
 import logging
+from unittest import TestCase
 import mox
 from datetime import date, timedelta
-from openmemo.algorithms.algorithm import *
-from openmemo.tests.tools import *
-from openmemo.algorithms.ssrf import *
-
+from ssrf.algorithms.ssrf import *
+from nose.tools import *
 logging.basicConfig(format=logging.BASIC_FORMAT, level=logging.DEBUG)
 
 

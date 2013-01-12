@@ -6,13 +6,13 @@ except ImporterError:
     from setuptools import setup, find_packages
 
 setup(
-    name='openmemo',
-    version="0.0.1",
+    name='ssrf',
+    version="0.1.0",
     #description='',
     #author='',
     #author_email='',
     #url='',
-    install_requires=['nose', 'mox', 'enum', 'fs>=0.4.0'],
+    install_requires=['nose', 'mox'],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     test_suite='nose.collector'
