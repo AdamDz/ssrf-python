@@ -410,7 +410,7 @@ class SSRFAlgorithm (object):
         
         # Calculate daily workloads and average difficulties in case 
         # the repetition of current LU was scheduled on min. - max. interval dates
-        new_workloads = map(lambda workload: workload + 1, workloads)
+        new_workloads = list(map(lambda workload: workload + 1, workloads))
         logger.debug("New workloads: %s", new_workloads)
         def new_avg_difficulty(interval, workload, avg_difficulty, new_workload):
             new_difficulty = self._calculate_difficulty(alg_data['num_reviews'],
@@ -418,8 +418,8 @@ class SSRFAlgorithm (object):
                                               interval)
             logger.debug("New difficulty for the interval %d: %s", interval, new_difficulty)
             return (workload * avg_difficulty + new_difficulty) / new_workload 
-        new_avg_difficulties = map(new_avg_difficulty, 
-                                   intervals, workloads, avg_difficulties, new_workloads)
+        new_avg_difficulties = list(map(new_avg_difficulty,
+                                   intervals, workloads, avg_difficulties, new_workloads))
         logger.debug("New avg. difficulties: %s", new_avg_difficulties)
         
         # Calculate load coefficient for each date in case of LU repeated on this date
@@ -427,8 +427,8 @@ class SSRFAlgorithm (object):
         logger.debug("New load coefficients: %s", new_load_coeffs)
         
         # Choose the date with the maximum load coefficient reduction
-        load_coeff_rel = map(lambda coeff1, coeff2: coeff1 / coeff2 if coeff2 != 0 else sys.maxint, 
-                             new_load_coeffs, load_coeffs)
+        load_coeff_rel = list(map(lambda coeff1, coeff2: coeff1 / coeff2 if coeff2 != 0 else sys.maxsize,
+                             new_load_coeffs, load_coeffs))
         logger.debug("Load coefficient relations (new to old): %s", load_coeff_rel)
         load_coeff_rel.reverse()
         max_load_reduction_ind = (len(load_coeff_rel) - 1) - load_coeff_rel.index(min(load_coeff_rel))
@@ -455,7 +455,7 @@ class SSRFAlgorithm (object):
         calculate_load_coeffs = lambda workload, avg_difficulty: \
             (((min_workload / workload - 1) ** 2 if workload != 0 else 0.0) + \
              ((min_difficulty / avg_difficulty - 1) ** 2 if avg_difficulty != 0.0 else 0.0)) / 2
-        load_coeffs = map(calculate_load_coeffs, workloads, avg_difficulties)
+        load_coeffs = list(map(calculate_load_coeffs, workloads, avg_difficulties))
 
         # Check postconditions
         self._assert_load_coeffs(load_coeffs)

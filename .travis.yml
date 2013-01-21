@@ -3,6 +3,6 @@ python:
   - "2.7"
   - "3.3"
 install:
-  - "pip install mox"
+  - "pip install mock"
   - "pip install . --use-mirrors"
 script: python -m unittest discover

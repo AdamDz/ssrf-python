@@ -17,7 +17,7 @@ setup(
     See: http://www.rapidstudy.com
     """,
     install_requires=[],
-    tests_require=['nose', 'mox'],
+    tests_require=[],
     author='Adam Dziendziel',
     author_email='adam.dziendziel@gmail.com',
     url='https://github.com/AdamDz/ssrf-python',
@@ -26,7 +26,10 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: POSIX',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3'
         'Topic :: Education',
     ],
 )
