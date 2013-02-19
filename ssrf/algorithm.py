@@ -15,9 +15,6 @@ PRIORITIES = (PRIORITY_LOW, PRIORITY_MEDIUM, PRIORITY_HIGH)
 DEFAULT_PRIORITY = PRIORITY_MEDIUM
 MIN_GRADE = GRADES[0]
 MAX_GRADE = GRADES[len(GRADES) - 1]
-FINAL_DRILL = 0
-MEMORIZED = 1
-STATUSES = (FINAL_DRILL, MEMORIZED)
 
 class SSRFAlgorithmGlobalData (object):
     """ Defines operations which gather data not associated with the current
@@ -188,10 +185,6 @@ class SSRFAlgorithm (object):
 
     How it works, or finding a good inter-repetition interval
     =========================================================
-    #. If the LU has FINAL_DRILL status, look at the current grade. 
-    If the grade is between 0 and 2, return (without doing anything).
-    If the grade is between 3 and 5, change status to RECOGNITION and return. 
-    
     #. Calculate minimum and maximum acceptable repetion intervals:
     Imin = SSRF[n, AG(n-1), G(n) - 1, P]
     Imax = SSRF[n, AG(n-1), G(n), P]
@@ -219,10 +212,7 @@ class SSRFAlgorithm (object):
     #. Calculate load coefficients for each date in case of LU repeated on this date
     
     #. An interval with the maximum load coefficient reduction = good interval (day)
-    
-    #. Depending on the grade, set the LU status: FINAL_DRILL for grades between 0 and 2, 
-    RECOGNITION for status between 3 and 5. 
-    
+
     Initial/default values
     ======================        
         
@@ -238,7 +228,6 @@ class SSRFAlgorithm (object):
     * ``difficulty`` - how this LU compares to an ideal LU
 
     """
-    FINAL_DRILL_GRADES = (0, 1, 2)
 
     _PRIORITY_MAP = {
         PRIORITY_LOW: 2.0,
@@ -273,14 +262,6 @@ class SSRFAlgorithm (object):
             now = datetime.utcnow()
         today = now.date()
 
-        # If the LU status is FINAL_DRILL, it is already scheduled.
-        # Update simply it's status depending on the current grade
-        if alg_data['status'] == FINAL_DRILL:
-            self._update_alg_data_status(alg_data, grade)
-            logger.debug("Output LU data: %s", alg_data)
-            alg_data['last_review'] = now
-            return AlgorithmResult(alg_data['next_review'], alg_data)
-
         last_review = alg_data.get('last_review')
         if last_review and last_review >= now - timedelta(hours=12):
             logger.debug("Already reviewed within 12h")
@@ -301,7 +282,6 @@ class SSRFAlgorithm (object):
 
         # Update LU algorithm parameters
         self._update_alg_data_after_scheduling(alg_data, now, ideal_interval, grade, priority, next_review)
-        self._update_alg_data_status(alg_data, grade)
 
         logger.debug("Output algorithm data: %s", alg_data)
         
@@ -481,17 +461,6 @@ class SSRFAlgorithm (object):
         # Check postconditions
         self._assert_alg_data(alg_data)
 
-    def _update_alg_data_status(self, alg_data, grade):
-        """ Updates the LU status depending on the last grade. 
-        
-        A LU can be drilled during the same learning session or can be marked
-        as memorized (it will be recalled on the scheduled repetition date.
-        """
-        if grade in SSRFAlgorithm.FINAL_DRILL_GRADES:
-            alg_data['status'] = FINAL_DRILL
-        else:
-            alg_data['status'] = MEMORIZED
-
     def _calculate_difficulty(self, num_reviews, priority, last_interval):
         """ Calcuates a difficulty of a LU.
          
@@ -563,8 +532,7 @@ class SSRFAlgorithm (object):
         alg_data.setdefault('num_reviews', 1)
         alg_data.setdefault('avg_grade', SSRFAlgorithm._DEFAULT_AVG_GRADE)
         alg_data.setdefault('difficulty', 0.0)
-        alg_data.setdefault('status', MEMORIZED)
-        
+
         # check postconditions
         self._assert_alg_data(alg_data)
         return alg_data

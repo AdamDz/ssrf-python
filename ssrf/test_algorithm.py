@@ -125,7 +125,7 @@ class TestSSRFAlgorithm (TestCase):
 
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self.assertEquals(date.today() + timedelta(1), next_review.date())
-        self._assert_new_alg_data(2, 1.25, 1.50, FINAL_DRILL, alg_data)
+        self._assert_new_alg_data(2, 1.25, 1.50,  alg_data)
         
     def test_schedule_first_rep_2_grade(self):
         date_from = date.today() + timedelta(1)
@@ -136,7 +136,7 @@ class TestSSRFAlgorithm (TestCase):
         next_review, alg_data = self._algorithm.schedule(grade=2)
 
         self.assertEquals(date.today() + timedelta(1), next_review.date())
-        self._assert_new_alg_data(2, 2.25, 1.50, FINAL_DRILL, alg_data)
+        self._assert_new_alg_data(2, 2.25, 1.50,  alg_data)
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self._global_data.get_avg_difficulties.assert_called_once_with(date_from, date_to, None)
         
@@ -148,7 +148,7 @@ class TestSSRFAlgorithm (TestCase):
         next_review, alg_data = self._algorithm.schedule(grade=3)
 
         self.assertEquals(date.today() + timedelta(1), next_review.date())
-        self._assert_new_alg_data(2, 2.75, 1.50, MEMORIZED, alg_data)
+        self._assert_new_alg_data(2, 2.75, 1.50,  alg_data)
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
 
     def test_schedule_first_rep_5_grade(self):
@@ -160,7 +160,7 @@ class TestSSRFAlgorithm (TestCase):
         next_review, alg_data = self._algorithm.schedule(grade=5)
 
         self.assertEquals(date.today() + timedelta(5), next_review.date())
-        self._assert_new_alg_data(2, 3.75, 0.41, MEMORIZED, alg_data)
+        self._assert_new_alg_data(2, 3.75, 0.41,  alg_data)
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self._global_data.get_avg_difficulties.assert_called_once_with(date_from, date_to, None)
         
@@ -174,7 +174,7 @@ class TestSSRFAlgorithm (TestCase):
 
         # then
         self.assertEquals(old_next_review, next_review)
-        self._assert_new_alg_data(3, 3.7, 2.26, MEMORIZED, alg_data)
+        self._assert_new_alg_data(3, 3.7, 2.26,  alg_data)
 
     def test_schedule_consecutive_rep_2_grade(self):
         date_from = date.today() + timedelta(4)
@@ -188,7 +188,7 @@ class TestSSRFAlgorithm (TestCase):
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self._global_data.get_avg_difficulties.assert_called_once_with(date_from, date_to, None)
         self.assertEquals(date.today() + timedelta(8), next_review.date())
-        self._assert_new_alg_data(4, 3.28, 3.56, FINAL_DRILL, alg_data)
+        self._assert_new_alg_data(4, 3.28, 3.56, alg_data)
 
     def test_schedule_consecutive_rep_3_grade(self):
         date_from = date.today() + timedelta(9)
@@ -206,7 +206,7 @@ class TestSSRFAlgorithm (TestCase):
         next_review, alg_data = self._algorithm.schedule(alg_data=alg_data, grade=3, priority=PRIORITY_LOW)
 
         self.assertEquals(date.today() + timedelta(14), next_review.date())
-        self._assert_new_alg_data(4, 3.53, 3.04, MEMORIZED,
+        self._assert_new_alg_data(4, 3.53, 3.04, 
                                  alg_data)
     
     def test_schedule_consecutive_rep_5_grade(self):
@@ -224,44 +224,7 @@ class TestSSRFAlgorithm (TestCase):
         next_review, alg_data = self._algorithm.schedule(grade=5, priority=PRIORITY_LOW, alg_data=alg_data)
 
         self.assertEquals(date.today() + timedelta(59), next_review.date())
-        self._assert_new_alg_data(4, 4.03, 1.66, MEMORIZED,
-                                 alg_data)
-    
-    def test_schedule_consecutive_rep_final_drill_0_grade(self):
-        alg_data = dict( num_reviews=2, avg_grade=2.7,
-                                       difficulty=0.8, next_review=datetime.now(),
-                                       status=FINAL_DRILL)
-        next_review, alg_data = self._algorithm.schedule(grade=0, priority=PRIORITY_HIGH, alg_data= alg_data)
-        
-        self._assert_new_alg_data(2, 2.7, 0.8, FINAL_DRILL,
-                                 alg_data)
-    
-    def test_schedule_consecutive_rep_final_drill_2_grade(self):
-        alg_data = dict(num_reviews=2, avg_grade=2.7, difficulty=0.8, next_review=datetime(2001, 10, 10),
-                        status=FINAL_DRILL)
-        next_review, alg_data = self._algorithm.schedule(grade=2, priority=PRIORITY_HIGH, alg_data=alg_data)
-
-        self.assertEquals(datetime(2001, 10, 10), next_review)
-        self._assert_new_alg_data(2, 2.7, 0.8, FINAL_DRILL,
-                                 alg_data)
-
-    def test_schedule_consecutive_rep_final_drill_3_grade(self):
-        alg_data = dict(num_reviews=2, avg_grade=2.7, difficulty=0.8, next_review=datetime(2001, 10, 10),
-                        status=FINAL_DRILL)
-        next_review, alg_data = self._algorithm.schedule(grade=3, priority=PRIORITY_HIGH, alg_data=alg_data)
-
-        self.assertEquals(datetime(2001, 10, 10), next_review)
-        self._assert_new_alg_data(2, 2.7, 0.8, MEMORIZED,
-                                 alg_data)
-
-    def test_schedule_consecutive_rep_final_drill_5_grade(self):
-        alg_data = dict(num_reviews=2, avg_grade=2.7, difficulty=0.8, next_review=datetime(2001, 10, 10),
-                        status=FINAL_DRILL)
-        next_review, alg_data = self._algorithm.schedule(grade=5, priority=PRIORITY_HIGH, alg_data=alg_data)
-
-        self.assertEquals(datetime(2001, 10, 10), next_review)
-        self._assert_new_alg_data(2, 2.7, 0.8, MEMORIZED,
-                                 alg_data)
+        self._assert_new_alg_data(4, 4.03, 1.66, alg_data)
 
     def test_schedule_wrong_alg_data_grade(self):
         alg_data = dict(grade=-1)
@@ -318,9 +281,7 @@ class TestSSRFAlgorithm (TestCase):
             self.assertAlmostEquals(exp_load_coeffs[i], load_coeffs[i], 3, 
                                     "[%d]: %s != %s within %d places" % (i, exp_load_coeffs[i], load_coeffs[i], 3))
         
-    def _assert_new_alg_data(self, exp_num_reviews, exp_avg_grade, exp_difficulty,
-                            exp_status, alg_data):
+    def _assert_new_alg_data(self, exp_num_reviews, exp_avg_grade, exp_difficulty, alg_data):
         self.assertEquals(exp_num_reviews, alg_data['num_reviews'])
         self.assertAlmostEquals(exp_avg_grade, alg_data['avg_grade'], 2)
         self._assert_difficulty(exp_difficulty, alg_data['difficulty'])
-        self.assertEquals(exp_status, alg_data['status'])

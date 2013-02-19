@@ -7,7 +7,7 @@ except ImporterError:
 
 setup(
     name='ssrf',
-    version='0.1.2',
+    version='0.1.3',
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     license='Creative Commons Attribution-Share Alike license',
