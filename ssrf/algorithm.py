@@ -278,7 +278,7 @@ class SSRFAlgorithm (object):
                 user_data)
 
         # Set a new schedule date based on the ideal interval
-        next_review = datetime.combine(today + timedelta(ideal_interval), now.time())
+        next_review = datetime.combine(today + timedelta(ideal_interval), now.timetz())
 
         # Update LU algorithm parameters
         self._update_alg_data_after_scheduling(alg_data, now, ideal_interval, grade, priority, next_review)

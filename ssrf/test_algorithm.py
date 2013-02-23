@@ -117,53 +117,53 @@ class TestSSRFAlgorithm (TestCase):
         self._assert_difficulty(0.0, difficulty)
 
     def test_schedule_first_rep_0_grade(self):
-        date_from = date.today() + timedelta(1)
-        date_to = date.today() + timedelta(1)
+        date_from = datetime.utcnow().date().today() + timedelta(1)
+        date_to = datetime.utcnow().date().today() + timedelta(1)
         self._global_data.get_workloads.return_value = [0]
 
         next_review, alg_data = self._algorithm.schedule(grade=0)
 
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
-        self.assertEquals(date.today() + timedelta(1), next_review.date())
+        self.assertEquals(datetime.utcnow().date().today() + timedelta(1), next_review.date())
         self._assert_new_alg_data(2, 1.25, 1.50,  alg_data)
-        
+
     def test_schedule_first_rep_2_grade(self):
-        date_from = date.today() + timedelta(1)
-        date_to = date.today() + timedelta(1)
+        date_from = datetime.utcnow().date().today() + timedelta(1)
+        date_to = datetime.utcnow().date().today() + timedelta(1)
         self._global_data.get_workloads.return_value = [5]
         self._global_data.get_avg_difficulties.return_value = [0.88]
 
         next_review, alg_data = self._algorithm.schedule(grade=2)
 
-        self.assertEquals(date.today() + timedelta(1), next_review.date())
+        self.assertEquals(datetime.utcnow().date().today() + timedelta(1), next_review.date())
         self._assert_new_alg_data(2, 2.25, 1.50,  alg_data)
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self._global_data.get_avg_difficulties.assert_called_once_with(date_from, date_to, None)
-        
+
     def test_schedule_first_rep_3_grade(self):
-        date_from = date.today() + timedelta(1)
-        date_to = date.today() + timedelta(2)
+        date_from = datetime.utcnow().date().today() + timedelta(1)
+        date_to = datetime.utcnow().date().today() + timedelta(2)
         self._global_data.get_workloads.return_value = [0, 1]
 
         next_review, alg_data = self._algorithm.schedule(grade=3)
 
-        self.assertEquals(date.today() + timedelta(1), next_review.date())
+        self.assertEquals(datetime.utcnow().date().today() + timedelta(1), next_review.date())
         self._assert_new_alg_data(2, 2.75, 1.50,  alg_data)
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
 
     def test_schedule_first_rep_5_grade(self):
-        date_from = date.today() + timedelta(4)
-        date_to = date.today() + timedelta(8)
+        date_from = datetime.utcnow().date().today() + timedelta(4)
+        date_to = datetime.utcnow().date().today() + timedelta(8)
         self._global_data.get_workloads.return_value = [5, 3, 2, 4, 8]
         self._global_data.get_avg_difficulties.return_value = [2.5, 0.3, 0.1, 1.1, 0.8]
 
         next_review, alg_data = self._algorithm.schedule(grade=5)
 
-        self.assertEquals(date.today() + timedelta(5), next_review.date())
+        self.assertEquals(datetime.utcnow().date().today() + timedelta(5), next_review.date())
         self._assert_new_alg_data(2, 3.75, 0.41,  alg_data)
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self._global_data.get_avg_difficulties.assert_called_once_with(date_from, date_to, None)
-        
+
     def test_schedule_should_do_nothing_if_reviewing_second_time_within_12h(self):
         # when
         old_next_review = datetime.now() + timedelta(4)
@@ -177,8 +177,8 @@ class TestSSRFAlgorithm (TestCase):
         self._assert_new_alg_data(3, 3.7, 2.26,  alg_data)
 
     def test_schedule_consecutive_rep_2_grade(self):
-        date_from = date.today() + timedelta(4)
-        date_to = date.today() + timedelta(9)
+        date_from = datetime.utcnow().date().today() + timedelta(4)
+        date_to = datetime.utcnow().date().today() + timedelta(9)
         self._global_data.get_workloads.return_value = [63, 40, 33, 20, 18, 50]
         self._global_data.get_avg_difficulties.return_value = [6.0, 2.2, 1.5, 1.6, 3.5, 5.1]
 
@@ -187,12 +187,12 @@ class TestSSRFAlgorithm (TestCase):
 
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self._global_data.get_avg_difficulties.assert_called_once_with(date_from, date_to, None)
-        self.assertEquals(date.today() + timedelta(8), next_review.date())
+        self.assertEquals(datetime.utcnow().date().today() + timedelta(8), next_review.date())
         self._assert_new_alg_data(4, 3.28, 3.56, alg_data)
 
     def test_schedule_consecutive_rep_3_grade(self):
-        date_from = date.today() + timedelta(9)
-        date_to = date.today() + timedelta(22)
+        date_from = datetime.utcnow().date().today() + timedelta(9)
+        date_to = datetime.utcnow().date().today() + timedelta(22)
         num_days = (date_to - date_from).days + 1
         workloads = range(10, 10 + num_days)
         self.assertEquals(num_days, len(workloads))
@@ -205,13 +205,13 @@ class TestSSRFAlgorithm (TestCase):
         alg_data = dict( num_reviews=3, avg_grade=3.7, difficulty=3.36)
         next_review, alg_data = self._algorithm.schedule(alg_data=alg_data, grade=3, priority=PRIORITY_LOW)
 
-        self.assertEquals(date.today() + timedelta(14), next_review.date())
-        self._assert_new_alg_data(4, 3.53, 3.04, 
+        self.assertEquals(datetime.utcnow().date().today() + timedelta(14), next_review.date())
+        self._assert_new_alg_data(4, 3.53, 3.04,
                                  alg_data)
-    
+
     def test_schedule_consecutive_rep_5_grade(self):
-        date_from = date.today() + timedelta(57)
-        date_to = date.today() + timedelta(154)
+        date_from = datetime.utcnow().date().today() + timedelta(57)
+        date_to = datetime.utcnow().date().today() + timedelta(154)
         num_days = (date_to - date_from).days + 1
         workloads = range(num_days, 0, -1)
         self.assertEquals(num_days, len(workloads))
@@ -223,7 +223,7 @@ class TestSSRFAlgorithm (TestCase):
         alg_data = dict( num_reviews=3, avg_grade=3.7, difficulty=0.41)
         next_review, alg_data = self._algorithm.schedule(grade=5, priority=PRIORITY_LOW, alg_data=alg_data)
 
-        self.assertEquals(date.today() + timedelta(59), next_review.date())
+        self.assertEquals(datetime.utcnow().date().today() + timedelta(59), next_review.date())
         self._assert_new_alg_data(4, 4.03, 1.66, alg_data)
 
     def test_schedule_wrong_alg_data_grade(self):
@@ -231,18 +231,18 @@ class TestSSRFAlgorithm (TestCase):
         self.assertRaises(AssertionError, self._algorithm.schedule, alg_data)
 
         self.assertRaises(AssertionError, self._algorithm.schedule, 6)
-            
+
     def test_schedule_wrong_alg_data_num_of_reviews(self):
         alg_data = dict(num_reviews=0)
         self.assertRaises(AssertionError, self._algorithm.schedule, 5, alg_data)
-        
+
     def test_schedule_wrong_alg_data_avg_grade(self):
         alg_data = dict(avg_grade=-0.01)
         self.assertRaises(AssertionError, self._algorithm.schedule, 5, alg_data)
-        
+
         alg_data = dict(avg_grade=5.01)
         self.assertRaises(AssertionError, self._algorithm.schedule, 5, alg_data)
-        
+
     def test_schedule_wrong_alg_data_priority(self):
         self.assertRaises(AssertionError, self._algorithm.schedule, grade=5, priority=-10.0)
 
@@ -253,16 +253,16 @@ class TestSSRFAlgorithm (TestCase):
         self.assertRaises(AssertionError, self._algorithm.schedule, alg_data)
 
     def test_schedule_wrong_global_data_workloads(self):
-        date_from = date.today() + timedelta(4)
-        date_to = date.today() + timedelta(8)
+        date_from = datetime.utcnow().date().today() + timedelta(4)
+        date_to = datetime.utcnow().date().today() + timedelta(8)
         self._global_data.get_workloads.return_value = [0, 0, 0, 0]
 
         self.assertRaises(AssertionError, self._algorithm.schedule, 5)
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
-    
+
     def test_schedule_wrong_global_data_avg_difficulties(self):
-        date_from = date.today() + timedelta(4)
-        date_to = date.today() + timedelta(8)
+        date_from = datetime.utcnow().date().today() + timedelta(4)
+        date_to = datetime.utcnow().date().today() + timedelta(8)
         self._global_data.get_workloads.return_value = [1, 1, 1, 1, 1]
         self._global_data.get_avg_difficulties.return_value = [0.0, 0.0, 0.0, 0.0]
 
