@@ -176,6 +176,19 @@ class TestSSRFAlgorithm (TestCase):
         self.assertEquals(old_next_review, next_review)
         self._assert_new_alg_data(3, 3.7, 2.26,  alg_data)
 
+    def test_schedule_set_next_review_to_12h_if_reviewing_second_time_within_12h_and_next_review_is_in_less_than_12h(self):
+        # when
+        now = datetime.now()
+        old_next_review = now - timedelta(hours=11, minutes=59)
+        almost_12h_ago = now - timedelta(hours=11, minutes=59)
+        alg_data = dict(num_reviews=3, avg_grade=3.7, difficulty=2.26,
+            last_review=almost_12h_ago, next_review=old_next_review)
+        next_review, alg_data = self._algorithm.schedule(grade=0, priority=PRIORITY_LOW, alg_data=alg_data, now=now)
+
+        # then
+        self.assertEquals(now + timedelta(hours=12), next_review)
+        self._assert_new_alg_data(3, 3.7, 2.26,  alg_data)
+
     def test_schedule_consecutive_rep_2_grade(self):
         date_from = datetime.utcnow().date().today() + timedelta(4)
         date_to = datetime.utcnow().date().today() + timedelta(9)
