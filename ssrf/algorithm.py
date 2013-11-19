@@ -263,11 +263,11 @@ class SSRFAlgorithm (object):
         today = now.date()
 
         last_review = alg_data.get('last_review')
-        if last_review and last_review >= now - timedelta(hours=12):
-            logger.debug("Already reviewed within 12h")
+        if last_review and last_review >= now - timedelta(hours=24):
+            logger.debug("Already reviewed within 24h")
             alg_data['last_review'] = now
-            if alg_data['next_review'] <= now + timedelta(hours=12):
-                alg_data['next_review'] = now + timedelta(hours=12)
+            if alg_data['next_review'] <= now + timedelta(hours=24):
+                alg_data['next_review'] = now + timedelta(hours=24)
             return AlgorithmResult(alg_data['next_review'], alg_data)
 
         # Calculate maximum acceptable repetion interval

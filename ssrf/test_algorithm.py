@@ -164,10 +164,10 @@ class TestSSRFAlgorithm (TestCase):
         self._global_data.get_workloads.assert_called_once_with(date_from, date_to, None)
         self._global_data.get_avg_difficulties.assert_called_once_with(date_from, date_to, None)
 
-    def test_schedule_should_do_nothing_if_reviewing_second_time_within_12h(self):
+    def test_schedule_should_do_nothing_if_reviewing_second_time_within_24h(self):
         # when
         old_next_review = datetime.now() + timedelta(4)
-        almost_12h_ago = datetime.now() - timedelta(hours=11, minutes=59)
+        almost_12h_ago = datetime.now() - timedelta(hours=23, minutes=59)
         alg_data = dict(num_reviews=3, avg_grade=3.7, difficulty=2.26,
             last_review=almost_12h_ago, next_review=old_next_review)
         next_review, alg_data = self._algorithm.schedule(grade=0, priority=PRIORITY_LOW, alg_data=alg_data)
@@ -176,17 +176,17 @@ class TestSSRFAlgorithm (TestCase):
         self.assertEquals(old_next_review, next_review)
         self._assert_new_alg_data(3, 3.7, 2.26,  alg_data)
 
-    def test_schedule_set_next_review_to_12h_if_reviewing_second_time_within_12h_and_next_review_is_in_less_than_12h(self):
+    def test_schedule_set_next_review_to_24h_if_reviewing_second_time_within_24h_and_next_review_is_in_less_than_24h(self):
         # when
         now = datetime.now()
-        old_next_review = now - timedelta(hours=11, minutes=59)
-        almost_12h_ago = now - timedelta(hours=11, minutes=59)
+        old_next_review = now - timedelta(hours=23, minutes=59)
+        almost_12h_ago = now - timedelta(hours=23, minutes=59)
         alg_data = dict(num_reviews=3, avg_grade=3.7, difficulty=2.26,
             last_review=almost_12h_ago, next_review=old_next_review)
         next_review, alg_data = self._algorithm.schedule(grade=0, priority=PRIORITY_LOW, alg_data=alg_data, now=now)
 
         # then
-        self.assertEquals(now + timedelta(hours=12), next_review)
+        self.assertEquals(now + timedelta(hours=24), next_review)
         self._assert_new_alg_data(3, 3.7, 2.26,  alg_data)
 
     def test_schedule_consecutive_rep_2_grade(self):
